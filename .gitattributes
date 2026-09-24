@@ -1,0 +1,12 @@
+# Auto detect text files and normalize to LF in the repo AND on disk (all platforms)
+* text=auto eol=lf
+
+# Explicitly mark common binary types so they are never line-ending converted
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.webp binary
+*.ico binary
+*.pdf binary
+*.zip binary

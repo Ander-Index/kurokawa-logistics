@@ -1,0 +1,49 @@
+# ===== Obsidian 个人配置 =====
+# 整个 .obsidian 都是本机偏好：设置、收藏夹、工作区、快捷键、图谱布局等
+# 每位成员保持自己的编辑习惯，不进 git
+.obsidian/
+
+# Obsidian 回收站
+.trash/
+
+# ===== 主创私有内容 =====
+# 仅通过 Obsidian Sync 在主创之间分享，完全不进 git
+__不公开/
+
+# ===== macOS =====
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+
+# ===== Windows =====
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# ===== Linux =====
+*~
+.fuse_hidden*
+.directory
+.Trash-*
+
+# ===== 编辑器 / IDE =====
+.idea/
+.vscode/
+*.swp
+*.swo
+*.swn
+
+# ===== 日志与临时文件 =====
+*.log
+*.tmp
+*.bak
+nohup.out
