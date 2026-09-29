@@ -52,6 +52,8 @@ permalink: p/cz12a
 
 [<img src="https://img.cntracker.net/img/8c34509f49408dc2189be2157488636e074327c6b5e746679b7aa17d4c21634c.v2" style="width: 100%; object-fit: cover;">](<飨宴.md>)
 
+>[!DANGER] 包含极度血腥的内容，请酌情阅读 
+
 ![[飨宴#^Summary]]
 
 --------------------------------
