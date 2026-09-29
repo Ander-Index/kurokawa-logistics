@@ -69,6 +69,18 @@ permalink: p/333
 
 ![](https://img.cntracker.net/img/a9fe3eef8e2952a7d8b919b80f627d5ca9a68dc8ad2bcb6ac727b887c55bf667.jpg)[^2]
 
+# 系统日志
+
+--------------------------------
+
+# [[飨宴]]
+
+[<img src="https://img.cntracker.net/img/8c34509f49408dc2189be2157488636e074327c6b5e746679b7aa17d4c21634c.v2" style="width: 100%; object-fit: cover;">](<飨宴.md>)
+
+![[飨宴#^Summary]]
+
+--------------------------------
+
 # 其他记录
 
 ## 入职记录
