@@ -2,7 +2,7 @@
 permalink: p/s108
 ---
 
-#职员 #用户
+#职员 #用户 #已植入龙髓
 
 ![](https://barcode.tec-it.com/barcode.ashx?data=ID.STAFF-108&code=PDF417)
 

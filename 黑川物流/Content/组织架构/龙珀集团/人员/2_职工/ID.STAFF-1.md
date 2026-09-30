@@ -2,7 +2,7 @@
 permalink: p/s1
 ---
 
-#用户 #实验品
+#用户 #实验品 #已植入龙髓
 
 ![](https://barcode.tec-it.com/barcode.ashx?data=ID.STAFF-1&code=PDF417)
 

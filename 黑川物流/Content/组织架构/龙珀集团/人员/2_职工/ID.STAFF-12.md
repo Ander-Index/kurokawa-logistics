@@ -1,7 +1,7 @@
 ---
 permalink: p/s12
 ---
-#职员 #机密
+#职员 #机密 
 
 ![](https://barcode.tec-it.com/barcode.ashx?data=ID.ADMIN-2&code=PDF417)
 
@@ -46,4 +46,4 @@ permalink: p/s12
 # 机密
 
 >[!DANGER]- ███-001-A
->![[███-001-A]]
+>![[E72C3642-0EA9-4240-9643-E3C84AA2C21F]]

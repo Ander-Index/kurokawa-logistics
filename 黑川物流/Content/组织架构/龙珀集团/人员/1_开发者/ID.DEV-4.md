@@ -1,7 +1,7 @@
 ---
 permalink: p/d4
 ---
-#开发者
+#开发者 #已植入龙髓
 
 ![](https://img.cntracker.net/img/644a9a2e46469c823ff3adab9012ba4e59f646c8dc5dae95985b982381226391.jpg)[^1]
 

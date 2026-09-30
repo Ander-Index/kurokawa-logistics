@@ -2,7 +2,7 @@
 permalink: p/a4
 ---
 
-#管理员 #开发者 #研究员 #用户 #机密
+#管理员 #开发者 #研究员 #用户 #机密 #已植入龙髓 #忠于龙珀
 
 ![](https://barcode.tec-it.com/barcode.ashx?data=ID.ADMIN-4&code=PDF417)
 
@@ -21,7 +21,7 @@ permalink: p/a4
 ## 人事变动记录
 
 > [!QUOTE]
-> ![[DA-HR__B6136152-BA2E-453B-8BDB-97E671DE98DD]]
+> ![[DE50B523-0FDC-40FD-94D0-35F68A136A69]]
 
 ## 旧档案
 
@@ -31,4 +31,4 @@ permalink: p/a4
 ## 机密
 
 > [!DANGER]- 【权限★管理员】
->![[DA-ARCHIVE-734__E7A3F91C-4D82-4B6F-9C15-2E8D3F7A6B01]]
+>![[4D4779DE-5B49-40D1-8B7C-47A35A40B5B5]]

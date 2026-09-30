@@ -2,7 +2,7 @@
 permalink: p/a
 ---
 
-#超级管理员 #管理员
+#超级管理员 #管理员 #已植入龙髓 #忠于龙珀
 
 ![](https://barcode.tec-it.com/barcode.ashx?data=ID.ROOT&code=PDF417)
 

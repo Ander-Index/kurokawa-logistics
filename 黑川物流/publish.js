@@ -132,3 +132,77 @@ document.documentElement.lang = 'zh-CN';
     }
   });
 })();
+
+/* ============================================================
+ * KKN（胶兽语伪终端）语法高亮 —— 【已停用 · 保留备用】
+ *
+ * 主题考量：黑川表面机械、内里人情 → 报文保持纯黑白更像人在说话；
+ *          龙珀表面人情、内里条框 → 彩色 log 才有异化感（故 log 保留）。
+ *
+ * 恢复方式：去掉下方每一行行首的 "// " 即可。
+ * ============================================================ */
+// 原 KKN 高亮代码（已验证可用，含非 BMP 图标代理对修复）：
+// (function () {
+//   var VERB_ICON_ALT = '󰘳|󰲽|||||||||||||||';
+//
+//   function defineKkn() {
+//     if (!window.Prism || !Prism.languages) return false;
+//     if (Prism.languages.kkn) return true;
+//
+//     Prism.languages.kkn = {
+//       'frame': {
+//         pattern: /[⏇⏈]/,
+//         alias: 'important'
+//       },
+//       'verb': {
+//         pattern: new RegExp('(^|[\\n\\r])[ \\t　]*(' + VERB_ICON_ALT + ')(?=　)', 'm'),
+//         lookbehind: true,
+//         alias: 'keyword'
+//       },
+//       'separator': {
+//         pattern: /%{3,}|-{3,}/m,
+//         alias: 'comment'
+//       },
+//       'job': {
+//         pattern: /＃\d{1,3}/,
+//         alias: 'number'
+//       },
+//       'string': [
+//         /"[^"\n]*"/,
+//         /「[^」\n]*」/
+//       ],
+//       'property': {
+//         pattern: /[^\s　：｜、，。！？%]+(?=：|:)/,
+//         alias: 'property'
+//       },
+//       'arrow': {
+//         pattern: /[→←↑↓]+/,
+//         alias: 'operator'
+//       },
+//       'number': /\b\d+(?:\.\d+)?%?\b/
+//     };
+//     Prism.languages.KKN = Prism.languages.kkn;
+//     return true;
+//   }
+//
+//   function rehighlight() {
+//     if (!window.Prism || !Prism.languages || !Prism.languages.kkn) return;
+//     if (typeof Prism.highlightElement !== 'function') return;
+//     var blocks = document.querySelectorAll('code');
+//     for (var i = 0; i < blocks.length; i++) {
+//       var el = blocks[i];
+//       if (!/language-["']?kkn["']?/i.test(el.className)) continue;
+//       el.textContent = el.textContent;
+//       try { Prism.highlightElement(el); } catch (e) {}
+//     }
+//   }
+//
+//   var attempts = [0, 800, 2500, 6000];
+//   for (var i = 0; i < attempts.length; i++) {
+//     (function (delay) {
+//       setTimeout(function () {
+//         if (defineKkn()) rehighlight();
+//       }, delay);
+//     })(attempts[i]);
+//   }
+// })();
