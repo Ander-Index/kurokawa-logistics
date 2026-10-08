@@ -1,0 +1,132 @@
+/* 1. 先声明字体（告诉浏览器这两个名字对应哪些 URL） */
+@font-face {
+  font-family: "SymbolsNerdFont";
+  src: url("https://blog.raster.team/fonts/SymbolsNerdFontMono-Regular.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "SarasaMonoSC";
+  src: url("https://blog.raster.team/fonts/SarasaMonoSC-Regular.ttf") format("truetype");
+}
+
+/* 2. 然后在变量中使用你定义的名称 */
+body {
+    --font-monospace-theme: "SymbolsNerdFont", "SarasaMonoSC", monospace;
+}
+
+/*页脚显示*/
+
+.published-container {
+    --footer-display: none;
+}
+
+
+
+/* 移除正文链接默认状态下的下划线 */
+.markdown-rendered a {
+    text-decoration: none !important;
+}
+
+
+/* 移除鼠标悬停时链接的下划线（如果你希望悬停时也不显示下划线，请保留这段） */
+/*
+.markdown-rendered a:hover {
+    text-decoration: none !important;
+}
+*/
+
+/* ========== 首页「催更」按钮 ========== */
+
+.cuigeng-wrap {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 4px 0 16px;
+    flex-wrap: wrap;
+}
+
+.cuigeng-btn {
+    appearance: none;
+    border: 1px solid var(--interactive-accent, #7f6df2);
+    background: var(--interactive-accent, #7f6df2);
+    color: var(--text-on-accent, #ffffff);
+    font-size: 15px;
+    font-weight: 600;
+    padding: 8px 22px;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+}
+
+.cuigeng-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 14px rgba(127, 109, 242, 0.35);
+}
+
+.cuigeng-btn:active {
+    transform: translateY(0) scale(0.97);
+}
+
+.cuigeng-btn--done {
+    background: var(--background-modifier-success, #3aa675);
+    border-color: var(--background-modifier-success, #3aa675);
+}
+
+.cuigeng-hint {
+    font-size: 13px;
+    color: var(--text-muted, #888);
+}
+
+.cuigeng-count {
+    font-size: 13px;
+    color: var(--text-muted, #888);
+    background: var(--background-secondary, rgba(127, 109, 242, 0.08));
+    border: 1px solid var(--background-modifier-border, rgba(127, 109, 242, 0.25));
+    padding: 4px 12px;
+    border-radius: 999px;
+}
+
+.cuigeng-count b {
+    color: var(--interactive-accent, #7f6df2);
+    font-size: 14px;
+    padding: 0 1px;
+}
+
+/* ========== 窄屏顶栏 logo 居中与间距修正 ==========
+ * 1) 垂直居中：.site-header-logo 默认 display:block，内部 img 是行内
+ *    元素，会贴在基线上导致 logo 偏上约 3px；改为 flex 后垂直居中。
+ * 2) 水平间距：官方给 img 设置了 max-width: calc(100% - 18px)，
+ *    在 flex 容器里形成循环尺寸依赖，logo 右侧凭空多出约 8px，
+ *    导致「汉堡 | logo | 站名」左右间距为 6px vs 18px。
+ *    解除 max-width 并固定图片尺寸，消除幻影间距。
+ * 3) 右侧 margin 设为 12px：汉堡按钮的 36px 方框内有 6px 内边距，
+ *    加上 6px margin，图标到 logo 的视觉距离实为 12px；
+ *    右侧保持一致的 12px 才能看起来真正等距。 */
+.site-header-logo {
+    display: flex;
+    align-items: center;
+}
+
+.site-header-logo img {
+    max-width: none;
+    width: 32px;
+    height: 32px;
+    margin-right: 12px;
+}
+
+/* 站名标题视觉垂直居中：
+ * 字体的 ascent/descent 度量把 CJK 字形的实际墨迹向上推了约 1px，
+ * 整体下移 1px 后与 logo、汉堡图标的墨迹中心完全对齐
+ * （像素级实测三者中心均为顶栏 24.75px 处）。 */
+.site-header-text {
+    transform: translateY(1px);
+}
+
+/* 顶栏站名悬停下划线移除：
+ * 官方通用规则 a:hover { text-decoration-line: var(--link-decoration-hover) }
+ * 优先级高于 .site-header-text 的 text-decoration:none，悬停时会冒出下划线。
+ * 官方只为桌面侧边栏站名（.site-body-left-column-site-name:hover）做了豁免，
+ * 这里给窄屏顶栏补上同样的处理。 */
+.site-header-text:hover {
+    text-decoration: none;
+}
