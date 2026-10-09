@@ -1,5 +1,6 @@
 ---
 permalink: p/s12
+theme-color: "#5698c3"
 ---
 #职员 #机密 
 
