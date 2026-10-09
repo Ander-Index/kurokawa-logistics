@@ -1,5 +1,6 @@
 ---
 permalink: p/22
+theme-color: "#1E90FF"
 ---
 
 #辅助型 #收藏品 #执行体

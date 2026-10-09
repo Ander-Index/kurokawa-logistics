@@ -1,5 +1,6 @@
 ---
 permalink: p/8
+theme-color: "#966495"
 ---
 
 #半藏品 #辅助型 

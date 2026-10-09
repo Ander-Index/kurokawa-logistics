@@ -1,5 +1,6 @@
 ---
 permalink: p/s0
+theme-color: "#2A0E3A"
 ---
 #TODO #研究员 #用户 #机密
 

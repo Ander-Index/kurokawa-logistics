@@ -1,5 +1,6 @@
 ---
 permalink: p/7
+theme-color: "#C0C0C0"
 ---
 
 #情报型 #半藏品 #服务器
