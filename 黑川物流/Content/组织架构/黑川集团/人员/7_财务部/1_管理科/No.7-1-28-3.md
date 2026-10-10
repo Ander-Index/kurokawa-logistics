@@ -50,6 +50,6 @@
 
 ## [[隔胶相望]]
 
-[<img src="https://cntracker.net/cdn-cgi/image/fit=scale-down,width=800/https://img.cntracker.net/img/9b878fda02c099ad4c85df3bb7041245.jpg" style="width: 100%; object-fit: cover;">](<隔胶相望>)
+[<img src="https://img.cntracker.net/img/6da8a9f39e69539fc1fa3af173390bd0cb5ce8ca03d830030753967fca5b14cc.jpg" style="width: 100%; object-fit: cover;">](<隔胶相望>)
 
 ![[隔胶相望#^Summary]]
