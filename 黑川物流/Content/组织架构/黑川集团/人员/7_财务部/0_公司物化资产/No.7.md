@@ -5,7 +5,7 @@ theme-color: "#C0C0C0"
 
 #情报型 #半藏品 #服务器
 
-![](https://cntracker.net/cdn-cgi/image/q=20/https://img.cntracker.net/img/f6bc0f9ce8c84d51d4e0e1fb29606312.png)
+![](https://cntracker.net/cdn-cgi/image/q=20/https://img.cntracker.net/img/377721d9a48a3816d918721754dc0cf84e6b0cc3768f7bd7238b26bcde7c2495.jpg)
 
 ![](https://barcode.tec-it.com/barcode.ashx?data=No.7&code=PDF417)
 
@@ -45,3 +45,7 @@ theme-color: "#C0C0C0"
 # 入职记录
 
 ![](https://cntracker.net/img/177df214d4477053481f93fcd9184915.png)
+
+# 旧版工服
+
+![](https://cntracker.net/cdn-cgi/image/q=20/https://img.cntracker.net/img/f6bc0f9ce8c84d51d4e0e1fb29606312.png)
