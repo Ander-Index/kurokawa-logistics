@@ -1,5 +1,6 @@
 ---
 permalink: p/4180
+theme-color: "#390A41"
 ---
 
 #半藏品 #殖民型

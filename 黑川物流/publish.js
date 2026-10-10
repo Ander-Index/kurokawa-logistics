@@ -3,14 +3,14 @@
  *
  * 功能目录
  *   01 · 站点语言：声明页面主要使用简体中文。
- *   02 · 浏览器配色：将笔记的 theme-color 属性转换为网页 meta 标签。
+ *   02 · 页面外观：浏览器配色与按笔记属性设置的页面背景图。
  *   03 · 催更按钮：点击统计、共享计数及按钮反馈。
  *   04 · KKN 语法高亮：已停用，历史代码保留备用。
  *
  * 外部服务（仅由 03 使用）
  *   Google Analytics：记录催更点击，通过 googletagmanager.com 加载统计脚本。
  *   Abacus / abacus.jasoncameron.dev：保存、读取累计催更点击次数。
- *   02 使用 Publish 已加载的笔记缓存，本身不发送网络请求。
+ *   02 使用 Publish 已加载的笔记缓存；背景图由浏览器从填写的链接加载。
  *
  * 发布方式：将本文件放在 Obsidian 仓库根目录，在「发布更改」中发布。
  * 自定义 JavaScript 需要绑定自定义域名；修改后刷新网页以加载新脚本。
@@ -27,10 +27,14 @@ document.documentElement.lang = 'zh-CN';
 
 
 /* ========================================================================
- * 02 · 浏览器配色（theme-color）
+ * 02 · 页面外观（theme-color + background-image）
  * ========================================================================
  * 用法：给笔记添加文本属性 theme-color，例如 "#2563EB"。
- * 流程：读取当前笔记属性 → 写入 <meta name="theme-color">。
+ * 背景用法：文本属性 background-image 填图片链接；background-mode 可选。
+ * 倾斜用法：数字属性 background-rotation 填角度，正数顺时针、负数逆时针。
+ * 显示模式：居中填充（默认）、平铺、拉伸、居中、适应。
+ * 背景只叠加在所属笔记窗格的主题底色上，以 5% 不透明度显示。
+ * 堆叠窗格分别使用各自笔记的背景属性，导航栏和其他窗格不受影响。
  * 时机：首次加载以及 Publish 的 navigated（切换笔记）事件。
  *
  * Android Chrome 等支持的浏览器可据此调整地址栏等界面配色。
@@ -45,8 +49,13 @@ document.documentElement.lang = 'zh-CN';
 
   // 默认留空：未填写或填写无效时恢复原配色。可改成 '#2563EB'。
   var DEFAULT_COLOR = '';
+  // 0.05 表示图片只显示 5%，其余 95% 为当前明亮 / 暗黑主题底色。
+  var BACKGROUND_OPACITY = 0.05;
   // 只保存本功能创建的 meta，便于恢复时保留网站原有标签。
   var themeMeta = null;
+  var backgroundStyle = null;
+  var rotatedBackgrounds = new WeakMap();
+  var backgroundResizeObserver = null;
   var attempts = 0;
 
   /* ---------- 校验属性 ---------- */
@@ -57,6 +66,40 @@ document.documentElement.lang = 'zh-CN';
     if (typeof value !== 'string') return '';
     var color = value.trim();
     return /^#(?:[0-9a-f]{3}|[0-9a-f]{6})$/i.test(color) ? color : '';
+  }
+
+  // 使用完整的 HTTP(S) 图片链接；CSS 字符串另行转义，不能注入样式。
+  function parseImageUrl(value) {
+    if (typeof value !== 'string' || !value.trim()) return '';
+    try {
+      var url = new URL(value.trim());
+      return /^(https?:)$/.test(url.protocol) ? url.href : '';
+    } catch (e) {
+      return '';
+    }
+  }
+
+  function parseBackgroundMode(value) {
+    var mode = typeof value === 'string' ? value.trim().toLowerCase() : '';
+    switch (mode) {
+      case '平铺': case 'tile':
+        return { size: 'auto', repeat: 'repeat' };
+      case '拉伸': case 'stretch':
+        return { size: '100% 100%', repeat: 'no-repeat' };
+      case '居中': case 'center':
+        return { size: 'auto', repeat: 'no-repeat' };
+      case '适应': case 'contain':
+        return { size: 'contain', repeat: 'no-repeat' };
+      default:
+        // 未填写、居中填充 / cover 或无法识别的值都按壁纸逻辑填满。
+        return { size: 'cover', repeat: 'no-repeat' };
+    }
+  }
+
+  function parseBackgroundRotation(value) {
+    if (typeof value === 'string' && value.trim()) value = Number(value);
+    if (typeof value !== 'number' || !Number.isFinite(value)) return 0;
+    return value % 360;
   }
 
   /* ---------- 更新网页 meta ---------- */
@@ -80,12 +123,147 @@ document.documentElement.lang = 'zh-CN';
     }
   }
 
+  /* ---------- 独立背景层与明暗主题 ---------- */
+
+  function clearBackgroundRotation(pane) {
+    var state = rotatedBackgrounds.get(pane);
+    if (state) {
+      backgroundResizeObserver.unobserve(pane);
+      state.layer.remove();
+      rotatedBackgrounds.delete(pane);
+    }
+    pane.classList.remove('has-rotated-note-background');
+    pane.style.removeProperty('--note-background-rotation');
+  }
+
+  function resizeRotatedBackground(pane, state) {
+    var width = state.layer.clientWidth;
+    var height = state.layer.clientHeight;
+    if (!width || !height) return;
+    var radians = state.rotation * Math.PI / 180;
+    var cosine = Math.abs(Math.cos(radians));
+    var sine = Math.abs(Math.sin(radians));
+    var paintWidth = width;
+    var paintHeight = height;
+    if (state.mode.size === 'contain') {
+      // 缩小绘制区域，使旋转后的整个矩形仍在窗格内，保留完整图片。
+      var scale = Math.min(width / (width * cosine + height * sine),
+        height / (width * sine + height * cosine));
+      paintWidth = width * scale;
+      paintHeight = height * scale;
+    } else {
+      // 反向旋转窗格四角，得到所需绘制区域；居中 / 平铺保留原图尺寸。
+      // 多留 1 像素，避免旋转的抗锯齿边缘出现细缝。
+      paintWidth = Math.ceil(width * cosine + height * sine) + 1;
+      paintHeight = Math.ceil(width * sine + height * cosine) + 1;
+    }
+    state.layer.style.setProperty('--note-background-paint-width', paintWidth + 'px');
+    state.layer.style.setProperty('--note-background-paint-height', paintHeight + 'px');
+  }
+
+  function applyBackgroundRotation(pane, rotation, mode) {
+    if (!rotation) {
+      clearBackgroundRotation(pane);
+      return;
+    }
+    if (!backgroundResizeObserver) {
+      backgroundResizeObserver = new ResizeObserver(function (entries) {
+        entries.forEach(function (entry) {
+          var target = entry.target;
+          var state = rotatedBackgrounds.get(target);
+          // 已关闭的堆叠窗格无需继续观察，也不保留其装饰节点。
+          if (!target.isConnected) clearBackgroundRotation(target);
+          else if (state) resizeRotatedBackground(target, state);
+        });
+      });
+    }
+    var state = rotatedBackgrounds.get(pane);
+    if (!state) {
+      var layer = document.createElement('div');
+      layer.className = 'note-background-layer';
+      layer.setAttribute('aria-hidden', 'true');
+      state = { layer: layer };
+      rotatedBackgrounds.set(pane, state);
+      pane.appendChild(layer);
+      backgroundResizeObserver.observe(pane);
+    }
+    state.rotation = rotation;
+    state.mode = mode;
+    pane.style.setProperty('--note-background-rotation', rotation + 'deg');
+    pane.classList.add('has-rotated-note-background');
+    resizeRotatedBackground(pane, state);
+  }
+
+  function applyBackground(pane, imageUrl, mode, rotation) {
+    if (!imageUrl) {
+      clearBackgroundRotation(pane);
+      pane.classList.remove('has-note-background');
+      pane.style.removeProperty('--note-background-image');
+      pane.style.removeProperty('--note-background-size');
+      pane.style.removeProperty('--note-background-repeat');
+      return;
+    }
+
+    if (!backgroundStyle) {
+      backgroundStyle = document.createElement('style');
+      // 样式随脚本发布；只在有背景图的笔记窗格、屏幕显示时生效。
+      var mask = 'color-mix(in srgb, var(--background-primary) ' +
+        ((1 - BACKGROUND_OPACITY) * 100) + '%, transparent)';
+      backgroundStyle.textContent = [
+        '@media screen {',
+        '  .published-container .publish-renderer.has-note-background {',
+        '    background-color: var(--background-primary);',
+        // 底色不透明，避免堆叠时透出后面笔记的文字和图片。
+        '    background-image: linear-gradient(' + mask + ', ' + mask + '),',
+        '      var(--note-background-image);',
+        '    background-position: center;',
+        '    background-size: auto, var(--note-background-size);',
+        '    background-repeat: no-repeat, var(--note-background-repeat);',
+        // 正文在窗格内部滚动，图片始终按所属窗格的尺寸适配。
+        '    background-attachment: scroll;',
+        '  }',
+        // 独立裁切层只旋转图片，保留正文、sticky 窗格和弹窗的定位。
+        '  .published-container .publish-renderer.has-rotated-note-background {',
+        '    background-image: none; isolation: isolate;',
+        '  }',
+        '  body:not(.sliding-windows) .publish-renderer.has-rotated-note-background {',
+        '    position: relative;',
+        '  }',
+        '  .has-rotated-note-background > .note-background-layer {',
+        '    position: absolute; inset: 0; overflow: hidden;',
+        '    pointer-events: none; z-index: -1;',
+        '  }',
+        '  .has-rotated-note-background > .note-background-layer::before {',
+        '    content: ""; position: absolute; left: 50%; top: 50%;',
+        '    width: var(--note-background-paint-width, 100%);',
+        '    height: var(--note-background-paint-height, 100%);',
+        '    transform: translate(-50%, -50%) rotate(var(--note-background-rotation));',
+        '    opacity: ' + BACKGROUND_OPACITY + ';',
+        '    background-image: var(--note-background-image);',
+        '    background-position: center;',
+        '    background-size: var(--note-background-size);',
+        '    background-repeat: var(--note-background-repeat);',
+        '  }',
+        '}',
+        '@media print { .note-background-layer { display: none; } }'
+      ].join('\n');
+      document.head.appendChild(backgroundStyle);
+    }
+    pane.style.setProperty('--note-background-image',
+      'url(' + JSON.stringify(imageUrl) + ')');
+    pane.style.setProperty('--note-background-size', mode.size);
+    pane.style.setProperty('--note-background-repeat', mode.repeat);
+    pane.classList.add('has-note-background');
+    applyBackgroundRotation(pane, rotation, mode);
+  }
+
   /* ---------- 接入 Publish 的笔记缓存与导航 ---------- */
 
   function connectPublish() {
     var publish = window.publish;
     var cache = publish && publish.site && publish.site.cache;
-    if (!publish || !publish.render || !cache ||
+    var container = document.querySelector('.published-container');
+    if (!publish || !publish.render || !cache || !container ||
         typeof cache.getCache !== 'function' || typeof publish.on !== 'function') {
       // 当前 Publish 会先加载缓存再执行本脚本；这是兼容性兜底。
       // 如果接口尚未准备好，每 200 毫秒重试，最多等待约 10 秒。
@@ -93,19 +271,46 @@ document.documentElement.lang = 'zh-CN';
       return;
     }
 
-    function updateColor() {
+    function updateAppearance() {
       // 使用实际笔记路径读取属性，因此笔记设置 permalink 也能找到。
-      var file = cache.getCache(publish.render.currentFilepath);
+      var filepath = publish.render.currentFilepath;
+      var file = filepath && !container.classList.contains('has-not-found')
+        ? cache.getCache(filepath) : null;
       var properties = file && file.frontmatter;
       var color = parseColor(properties && properties['theme-color']);
       applyColor(color || parseColor(DEFAULT_COLOR));
+      // 堆叠模式保留多个 renderer，必须逐一读取各自的实际笔记路径。
+      // 背景属性写在所属窗格上，切换焦点不会覆盖其他已打开的笔记。
+      var renderers = Array.isArray(publish.stack) ? publish.stack.slice() : [];
+      if (renderers.indexOf(publish.render) === -1) renderers.push(publish.render);
+      for (var i = 0; i < renderers.length; i++) {
+        var renderer = renderers[i];
+        var pane = renderer && renderer.renderContainerEl;
+        if (!pane) continue;
+        var paneFile = renderer.currentFilepath
+          ? cache.getCache(renderer.currentFilepath) : null;
+        var paneProperties = paneFile && paneFile.frontmatter;
+        applyBackground(pane,
+          parseImageUrl(paneProperties && paneProperties['background-image']),
+          parseBackgroundMode(paneProperties && paneProperties['background-mode']),
+          parseBackgroundRotation(paneProperties && paneProperties['background-rotation']));
+      }
     }
 
     // 站内切换通常不会整页刷新，必须随导航更新，避免沿用上一页颜色。
     // 普通跳转、前进后退及滑动窗格切换均由 Publish 处理并通知。
-    publish.on('navigated', updateColor);
+    publish.on('navigated', updateAppearance);
+    // Publish 的 404 页面不会触发 navigated，补充清理上一页的外观。
+    var wasNotFound = container.classList.contains('has-not-found');
+    new MutationObserver(function () {
+      var isNotFound = container.classList.contains('has-not-found');
+      if (isNotFound !== wasNotFound) {
+        wasNotFound = isNotFound;
+        updateAppearance();
+      }
+    }).observe(container, { attributes: true, attributeFilter: ['class'] });
     // 脚本加载时也立即同步一次，覆盖当前已经打开的笔记。
-    updateColor();
+    updateAppearance();
   }
 
   connectPublish();
