@@ -80,7 +80,3 @@ theme-color: "#B4391D"
 # 其他记录
 
 ![](https://cntracker.net/cdn-cgi/image/q=50/https://img.cntracker.net/img/bbcb92d0bb3efd3443577544f4b38a029dca22561878f8cb705cc6fe00c0b286.png)
-
---------------------------------
-
-- 背景图片来自网络。
