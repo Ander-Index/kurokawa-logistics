@@ -1,5 +1,6 @@
 ---
 permalink: goods/mini8
+theme-color: "#966495"
 ---
 
 #解决方案 #AIGC
