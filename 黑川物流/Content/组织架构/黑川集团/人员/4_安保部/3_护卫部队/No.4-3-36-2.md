@@ -4,7 +4,7 @@ permalink: p/436
 
 #半藏品 
 
-![](https://barcode.tec-it.com/barcode.ashx?data=No.4--36-&code=PDF417)
+![](https://barcode.tec-it.com/barcode.ashx?data=No.4-3-36-2&code=PDF417)
 
 
 # 凌氪 ("kr07")
